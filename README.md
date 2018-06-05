@@ -12,7 +12,7 @@ I made it to get a deeper understanding of lists.
 3) Paste it in your Library folder (Usually located somewhere at documents/Arduino/libraries).  
 4) Restart the Arduino IDE.  
 
-You can also just download the [SimpleList.h](https://github.com/spacehuhn/SimpleList/blob/master/SimpleList.h) 
+You can also just download the [SimpleList.h](https://github.com/spacehuhn/SimpleList/blob/master/src/SimpleList.h) 
 file and paste it in your Arduino sketch folder.  
 
 ## Usage
