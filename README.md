@@ -17,6 +17,9 @@ file and paste it in your Arduino sketch folder.
 
 ## Usage
 
+**If something of these examples won't work, please open an issue!**  
+I sometimes change things in the source code and forget to update the examples.  
+
 ### Include the library
 ```c++
 #include <SimpleList.h>  
@@ -130,12 +133,12 @@ int indexOfIntOne = list->binSearch([](int &a) -> int{
 int numberOfZeros = 0;
 for(int i=0;i<myList->size();i++){
     if(myList->get(i) == 0) numberOfZeros++;  
-});
+};
 
 int selectedNum = 0;
 for(int i=0;i<myList->size();i++){
     if(myList->get(i).selected) selectedNum++;  
-});
+};
 ```
 
 ### Swapping elements
