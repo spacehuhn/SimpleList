@@ -127,12 +127,14 @@ int indexOfIntOne = list->binSearch([](int &a) -> int{
 
 ### Counting elements
 ```c++
-int numberOfZeros = myList->count([](int &a)->bool{
-    return a == 0;  
+int numberOfZeros = 0;
+for(int i=0;i<myList->size();i++){
+    if(myList->get(i) == 0) numberOfZeros++;  
 });
 
-int selectedNum = myList->count([](MyClass &a)->bool{
-    return a.selected;  
+int selectedNum = 0;
+for(int i=0;i<myList->size();i++){
+    if(myList->get(i).selected) selectedNum++;  
 });
 ```
 
