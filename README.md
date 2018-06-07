@@ -1,7 +1,7 @@
 # SimpleList
 
 Nothing big, just my own implementation of a linked list in c++ for all kind of Arduino projects.  
-This Arduino Library was inspired by the [LinkedList](https://github.com/ivanseidel/LinkedList) 
+This Arduino Library was inspired by the [LinkedList](https://github.com/ivanseidel/LinkedList)
 and is mostly compatible too it.   
 I made it to get a deeper understanding of lists.  
 
@@ -12,13 +12,10 @@ I made it to get a deeper understanding of lists.
 3) Paste it in your Library folder (Usually located somewhere at documents/Arduino/libraries).  
 4) Restart the Arduino IDE.  
 
-You can also just download the [SimpleList.h](https://github.com/spacehuhn/SimpleList/blob/master/src/SimpleList.h) 
+You can also just download the [SimpleList.h](https://github.com/spacehuhn/SimpleList/blob/master/SimpleList.h)
 file and paste it in your Arduino sketch folder.  
 
 ## Usage
-
-**If something of these examples won't work, please open an issue!**  
-I sometimes change things in the source code and forget to update the examples.  
 
 ### Include the library
 ```c++
@@ -28,7 +25,7 @@ I sometimes change things in the source code and forget to update the examples.
 ### Creating a SimpleList
 ```c++
 // A list of integer
-LinkedList<int> *myLinkedList = new LinkedList<int>();
+SimpleList<int> *myLinkedList = new SimpleList<int>();
 
 // A list of 'MyClass'
 SimpleList<MyClass> *mySimpleList = new SimpleList<MyClass>();
@@ -39,6 +36,16 @@ SimpleList<MyClass> *mySimpleList = new SimpleList<MyClass>();
 int theSize = myList->size();
 ```
 
+### Adding compare function
+```c++
+// Add a compare function to sort or search the list
+    list->compare = [](int &a, int &b) -> int {
+      if(a < b) return -1;
+      if(a == b) return 0;
+      if(a > b) return 1;  
+    };
+```
+
 ### Adding elements
 ```c++
 // add(obj) will add the object at the end of the list
@@ -47,6 +54,9 @@ myList->add(myObject);
 // add(index, obj) method will insert the object at the specified index
 myList->add(0, myObject); // Add at the beginning
 myList->add(3, myObject); // Add at index 3
+
+// insert will try to put the object at the correct spot to keep the list isSorted (compare function is required!)
+myList->insert(myObject);
 ```
 
 ### Getting elements
@@ -59,6 +69,17 @@ myObject = myList->get(2);
 
 // Get the last element
 myObject = myList->get(myList->size() - 1);
+```
+
+### Sorting the list
+```c++
+// PLEASE NOTE: compare function must be set!
+
+// Sort the list
+list->sort();
+
+// Check if list is currently sorted
+bool isSorted = list->isSorted();
 ```
 
 ### Replacing elements
@@ -90,55 +111,27 @@ myList->clear();
 // Please note that clear() wont free memory from pointers, you have to manually delete/free those!
 // Example:
 while(list->size() > 0){
-    delete myList->get(0).somePointer;
-    list->remove(0);
+	delete myList->get(0).somePointer;
+	list->remove(0);
 }
-```
-
-### Sorting list
-```c++
-myList->sort([](int &a, int &b) -> bool { 
-    return a > b; 
-});
 ```
 
 ### Searching for elements
 ```c++
+// PLEASE NOTE: compare function must be set!
+
 // seach() returns the index of the element, not the element itself!
-int indexOfSeven = list->search([](int &a) -> bool{ 
-    return a == 7; 
-});
-
-int indexOftheFirstSelected = list->search([](MyClass &a) -> bool{ 
-    return a.selected; 
-});
-MyClass firstSelected = list->get(indexOftheFirstSelected);
-
-// searchNext is like search() but will start on the last used index instead of index 0
-int indexOftheNextSelected = list->searchNext([](MyClass &a) -> bool{ 
-    return a.selected; 
-});
+int indexOfSeven = list->search(7);
 
 // When the list is sorted, you can also do a more efficient binary search
-// here find the element 
-int indexOfIntOne = list->binSearch([](int &a) -> int{ 
-    if(a == 1) return 0; 
-    if(a < 1) return 1; 
-    if(a > 1) return -1;   
-})); 
+// here find the element
+int indexOfIntOne = list->binSearch(1);
 ```
 
 ### Counting elements
 ```c++
-int numberOfZeros = 0;
-for(int i=0;i<myList->size();i++){
-    if(myList->get(i) == 0) numberOfZeros++;  
-};
-
-int selectedNum = 0;
-for(int i=0;i<myList->size();i++){
-    if(myList->get(i).selected) selectedNum++;  
-};
+// PLEASE NOTE: compare function must be set!
+int numberOfZeros = myList->count(0);
 ```
 
 ### Swapping elements
