@@ -1,9 +1,9 @@
 
-        #ifndef SimpleList_h
-        #define SimpleList_h
+#ifndef SimpleList_h
+#define SimpleList_h
 
-        #include <stddef.h>
-        #include <functional>
+#include <stddef.h>
+#include <functional>
 
 template<class T>
 struct Node {
