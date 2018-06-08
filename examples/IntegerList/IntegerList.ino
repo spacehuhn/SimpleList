@@ -24,7 +24,7 @@ void setup() {
     delay(200);
 
     // create new list
-    list = new SimpleList<int>;
+    list = new SimpleList<int>();
 
     // add a bunch of numbers
     list->add(1);
