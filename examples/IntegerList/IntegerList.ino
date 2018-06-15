@@ -55,13 +55,13 @@ void setup() {
     // => 3 -> 7 -> 1 -> 6 -> 4 -> //
 
     // add a compare function to sort or search the list
-    list->compare = [](int& a, int& b) -> int {
-                        if (a < b) return -1;
+    list->setCompare([](int& a, int& b) -> int {
+        if (a < b) return -1;
 
-                        if (a == b) return 0;
+        if (a == b) return 0;
 
-                        if (a > b) return 1;
-                    };
+        if (a > b) return 1;
+    });
 
     // find the number 7 and replace it with a 2
     list->replace(list->search(7), 2);

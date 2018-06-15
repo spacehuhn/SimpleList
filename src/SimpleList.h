@@ -14,10 +14,10 @@ struct SimpleListNode {
 template<typename T>
 class SimpleList {
     public:
-        std::function<int(T& a, T& b)>compare = NULL;
-
         SimpleList();
         ~SimpleList();
+
+        virtual void setCompare(int (*compare)(T & a, T & b));
 
         virtual int size();
         virtual void add(int index, T obj);
@@ -25,12 +25,12 @@ class SimpleList {
         virtual void insert(T obj);
         virtual void replace(int index, T obj);
         virtual void remove(int index);
+        virtual bool has(T obj);
         virtual T shift();
         virtual T pop();
         virtual T get(int index);
         virtual int search(T obj);
         virtual int searchNext(T obj);
-        virtual int binSearch(T obj, int lowerEnd, int upperEnd);
         virtual int binSearch(T obj);
         virtual int count(T obj);
         virtual void sort();
@@ -39,6 +39,8 @@ class SimpleList {
         virtual bool isSorted();
 
     protected:
+        int (*compare)(T & a, T & b) = NULL;
+
         int listSize;
         SimpleListNode<T>* listBegin;
         SimpleListNode<T>* listEnd;
@@ -50,7 +52,8 @@ class SimpleList {
 
         bool sorted = true;
 
-        SimpleListNode<T>* getNode(int index);
+        virtual SimpleListNode<T>* getNode(int index);
+        virtual int binSearch(T obj, int lowerEnd, int upperEnd);
 };
 
 template<typename T>
@@ -75,6 +78,13 @@ SimpleList<T>::~SimpleList() {
     lastNodeGot  = NULL;
     lastIndexGot = -1;
     isCached     = false;
+}
+
+template<typename T>
+void SimpleList<T>::setCompare(int (*compare)(T & a, T & b)) {
+    SimpleList<T>::compare = compare;
+    sorted                 = false;
+    sort();
 }
 
 template<typename T>
@@ -226,6 +236,12 @@ void SimpleList<T>::remove(int index) {
     isCached = false;
 
     listSize--;
+}
+
+template<typename T>
+bool SimpleList<T>::has(T obj) {
+    if ((compare != NULL) && sorted) return binSearch(obj) >= 0;
+    else return search(obj) >= 0;
 }
 
 template<typename T>

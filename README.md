@@ -39,11 +39,11 @@ int theSize = myList->size();
 ### Adding compare function
 ```c++
 // Add a compare function to sort or search the list
-    list->compare = [](int &a, int &b) -> int {
+    list->setCompare([](int &a, int &b) -> int {
       if(a < b) return -1;
       if(a == b) return 0;
       if(a > b) return 1;  
-    };
+    });
 ```
 
 ### Adding elements
