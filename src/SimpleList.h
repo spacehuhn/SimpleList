@@ -15,7 +15,7 @@ template<typename T>
 class SimpleList {
     public:
         SimpleList();
-        ~SimpleList();
+        virtual ~SimpleList();
 
         virtual void setCompare(int (*compare)(T & a, T & b));
 
