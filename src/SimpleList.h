@@ -25,10 +25,14 @@ class SimpleList {
         virtual void insert(T obj);
         virtual void replace(int index, T obj);
         virtual void remove(int index);
+        virtual void removeFirst();
+        virtual void removeLast();
         virtual bool has(T obj);
         virtual T shift();
         virtual T pop();
         virtual T get(int index);
+        virtual T getFirst();
+        virtual T getLast();
         virtual int search(T obj);
         virtual int searchNext(T obj);
         virtual int binSearch(T obj);
@@ -37,6 +41,7 @@ class SimpleList {
         virtual void swap(int x, int y);
         virtual void clear();
         virtual bool isSorted();
+        virtual bool isEmpty();
 
     protected:
         int (*compare)(T & a, T & b) = NULL;
@@ -239,6 +244,16 @@ void SimpleList<T>::remove(int index) {
 }
 
 template<typename T>
+void SimpleList<T>::removeFirst() {
+    remove(0);
+}
+
+template<typename T>
+void SimpleList<T>::removeLast() {
+    remove(listSize - 1);
+}
+
+template<typename T>
 bool SimpleList<T>::has(T obj) {
     if ((compare != NULL) && sorted) return binSearch(obj) >= 0;
     else return search(obj) >= 0;
@@ -248,6 +263,16 @@ template<typename T>
 T SimpleList<T>::get(int index) {
     SimpleListNode<T>* hNode = getNode(index);
     return hNode ? hNode->data : T();
+}
+
+template<typename T>
+T SimpleList<T>::getFirst() {
+    return get(0);
+}
+
+template<typename T>
+T SimpleList<T>::getLast() {
+    return get(listSize - 1);
 }
 
 template<typename T>
@@ -288,7 +313,7 @@ int SimpleList<T>::searchNext(T obj) {
 
 template<typename T>
 int SimpleList<T>::binSearch(T obj, int lowerEnd, int upperEnd) {
-    if ((compare == NULL) || !sorted) return -1;
+    if ((compare == NULL) || !sorted) return search(obj);
 
     int res;
     int mid = (lowerEnd + upperEnd) / 2;
@@ -340,19 +365,17 @@ int SimpleList<T>::count(T obj) {
 
 template<typename T>
 T SimpleList<T>::pop() {
-    if (listSize <= 0) return T();
+    T data = getLast();
 
-    T data = listEnd->data;
-    remove(listSize - 1);
+    removeLast();
     return data;
 }
 
 template<typename T>
 T SimpleList<T>::shift() {
-    if (listSize <= 0) return T();
+    T data = getFirst();
 
-    T data = listBegin->data;
-    remove(0);
+    removeFirst();
     return data;
 }
 
@@ -414,7 +437,7 @@ void SimpleList<T>::swap(int x, int y) {
 
 template<typename T>
 void SimpleList<T>::sort() {
-    if ((compare == NULL) || sorted) return;
+    if (compare == NULL) return;
 
     // selection sort
 
@@ -446,6 +469,11 @@ void SimpleList<T>::sort() {
 template<typename T>
 bool SimpleList<T>::isSorted() {
     return sorted;
+}
+
+template<typename T>
+bool SimpleList<T>::isEmpty() {
+    return listSize == 0;
 }
 
 #endif // ifndef SimpleList_h
