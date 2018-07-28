@@ -5,12 +5,6 @@
 #include <stddef.h>
 #include <functional>
 
-template<class T>
-struct SimpleListNode {
-    T                  data;
-    SimpleListNode<T>* next;
-};
-
 template<typename T>
 class SimpleList {
     public:
@@ -44,20 +38,36 @@ class SimpleList {
         virtual bool isEmpty();
 
     protected:
-        int (*compare)(T & a, T & b) = NULL;
+        class Node {
+            public:
+                T data;
+                Node* next;
+
+                Node(T data, Node* next) {
+                    this->data = data;
+                    this->next = next;
+                }
+
+                ~Node() {
+                    if ((data != NULL) && (std::is_pointer<T>::value)) delete data;
+                    if (next != NULL) delete next;
+                }
+        };
+
+        int (* compare)(T& a, T& b) = NULL;
 
         int listSize;
-        SimpleListNode<T>* listBegin;
-        SimpleListNode<T>* listEnd;
+        Node* listBegin;
+        Node* listEnd;
 
         // Helps get() method by saving last position
-        SimpleListNode<T>* lastNodeGot;
+        Node* lastNodeGot;
         int lastIndexGot;
         bool isCached;
 
         bool sorted = true;
 
-        virtual SimpleListNode<T>* getNode(int index);
+        virtual Node* getNode(int index);
         virtual int binSearch(T obj, int lowerEnd, int upperEnd);
 };
 
@@ -93,11 +103,11 @@ void SimpleList<T>::setCompare(int (*compare)(T & a, T & b)) {
 }
 
 template<typename T>
-SimpleListNode<T>* SimpleList<T>::getNode(int index) {
+typename  SimpleList<T>::Node* SimpleList<T>::getNode(int index) {
     if ((index < 0) || (index >= listSize)) return NULL;
 
-    SimpleListNode<T>* hNode = listBegin;
-    int c                    = 0;
+    Node* hNode = listBegin;
+    int   c     = 0;
 
     if (isCached && (index >= lastIndexGot)) {
         c     = lastIndexGot;
@@ -125,9 +135,7 @@ int SimpleList<T>::size() {
 
 template<typename T>
 void SimpleList<T>::add(T obj) {
-    SimpleListNode<T>* node = new SimpleListNode<T>();
-    node->data = obj;
-    node->next = NULL;
+    Node* node = new Node(obj, NULL);
 
     if (!listBegin) listBegin = node;
 
@@ -149,13 +157,11 @@ void SimpleList<T>::add(int index, T obj) {
         return;
     }
 
-    SimpleListNode<T>* nodeNew = new SimpleListNode<T>();
-    nodeNew->data = obj;
-    nodeNew->next = NULL;
+    Node* nodeNew = new Node(obj, NULL);
 
     if (index == 0) listBegin = nodeNew;
     else {
-        SimpleListNode<T>* nodePrev = getNode(index - 1);
+        Node* nodePrev = getNode(index - 1);
         nodeNew->next  = nodePrev->next;
         nodePrev->next = nodeNew;
     }
@@ -172,9 +178,7 @@ void SimpleList<T>::insert(T obj) {
     }
 
     // create new node
-    SimpleListNode<T>* newNode = new SimpleListNode<T>();
-    newNode->next = NULL;
-    newNode->data = obj;
+    Node* newNode = new Node(obj, NULL);
 
     if (listSize == 0) {
         // add at start (first node)
@@ -192,9 +196,9 @@ void SimpleList<T>::insert(T obj) {
             listBegin     = newNode;
         } else {
             // insertion sort
-            SimpleListNode<T>* h = listBegin;
-            SimpleListNode<T>* p = NULL;
-            bool found           = false;
+            Node* h     = listBegin;
+            Node* p     = NULL;
+            bool  found = false;
 
             // here a sequential search, because otherwise the previous node couldn't be accessed
             while (h != NULL && !found) {
@@ -225,8 +229,8 @@ template<typename T>
 void SimpleList<T>::remove(int index) {
     if ((index < 0) || (index >= listSize)) return;
 
-    SimpleListNode<T>* nodePrev     = getNode(index - 1);
-    SimpleListNode<T>* nodeToDelete = getNode(index);
+    Node* nodePrev     = getNode(index - 1);
+    Node* nodeToDelete = getNode(index);
 
     if (index == 0) {
         listBegin = nodeToDelete->next;
@@ -261,7 +265,8 @@ bool SimpleList<T>::has(T obj) {
 
 template<typename T>
 T SimpleList<T>::get(int index) {
-    SimpleListNode<T>* hNode = getNode(index);
+    Node* hNode = getNode(index);
+
     return hNode ? hNode->data : T();
 }
 
@@ -281,8 +286,8 @@ int SimpleList<T>::search(T obj) {
 
     int i = 0;
 
-    SimpleListNode<T>* hNode = getNode(i);
-    bool found               = compare(obj, hNode->data) == 0;
+    Node* hNode = getNode(i);
+    bool  found = compare(obj, hNode->data) == 0;
 
     while (!found && i < listSize) {
         i++;
@@ -299,8 +304,8 @@ int SimpleList<T>::searchNext(T obj) {
 
     int i = lastIndexGot;
 
-    SimpleListNode<T>* hNode = lastNodeGot;
-    bool found               = compare(obj, hNode->data) == 0;
+    Node* hNode = lastNodeGot;
+    bool  found = compare(obj, hNode->data) == 0;
 
     while (!found && i < listSize) {
         i++;
@@ -318,8 +323,8 @@ int SimpleList<T>::binSearch(T obj, int lowerEnd, int upperEnd) {
     int res;
     int mid = (lowerEnd + upperEnd) / 2;
 
-    SimpleListNode<T>* hNode = listBegin;
-    int hIndex               = 0;
+    Node* hNode  = listBegin;
+    int   hIndex = 0;
 
     while (lowerEnd <= upperEnd) {
         hNode  = lastNodeGot;
@@ -396,9 +401,9 @@ void SimpleList<T>::swap(int x, int y) {
 
         // When data is small, copy it
         if (sizeof(T) < 24) {
-            SimpleListNode<T>* nodeA = getNode(x);
-            SimpleListNode<T>* nodeB = getNode(y);
-            T h                      = nodeA->data;
+            Node* nodeA = getNode(x);
+            Node* nodeB = getNode(y);
+            T     h     = nodeA->data;
             nodeA->data = nodeB->data;
             nodeB->data = h;
         }
@@ -407,12 +412,12 @@ void SimpleList<T>::swap(int x, int y) {
         else {
             // Example: a -> b -> c -> ... -> g -> h -> i
             //          we want to swap b with h
-            SimpleListNode<T>* nodeA = getNode(x - 1);                      // x.prev
-            SimpleListNode<T>* nodeB = getNode(x);                          // x
-            SimpleListNode<T>* nodeC = getNode(x + 1);                      // x.next
-            SimpleListNode<T>* nodeG = y - 1 == x ? nodeB : getNode(y - 1); // y.prev
-            SimpleListNode<T>* nodeH = getNode(y);                          // y
-            SimpleListNode<T>* nodeI = getNode(y + 1);                      // y.next
+            Node* nodeA = getNode(x - 1);                      // x.prev
+            Node* nodeB = getNode(x);                          // x
+            Node* nodeC = getNode(x + 1);                      // x.next
+            Node* nodeG = y - 1 == x ? nodeB : getNode(y - 1); // y.prev
+            Node* nodeH = getNode(y);                          // y
+            Node* nodeI = getNode(y + 1);                      // y.next
 
             // a -> h -> i      b -> c -> ... -> g -> h -> i
             if (nodeA) nodeA->next = nodeH;
@@ -441,11 +446,11 @@ void SimpleList<T>::sort() {
 
     // selection sort
 
-    int indexH;                 // index of node i
-    int indexMin;               // index of next minimum node
+    int indexH;    // index of node i
+    int indexMin;  // index of next minimum node
 
-    SimpleListNode<T>* nodeMin; // next minimum node
-    SimpleListNode<T>* nodeH;   // helper node at index j
+    Node* nodeMin; // next minimum node
+    Node* nodeH;   // helper node at index j
 
     for (int i = 0; i < listSize - 1; i++) {
         nodeMin  = getNode(i);
