@@ -57,10 +57,8 @@ void setup() {
     // add a compare function to sort or search the list
     list->setCompare([](int& a, int& b) -> int {
         if (a < b) return -1;
-
-        if (a == b) return 0;
-
-        if (a > b) return 1;
+        else if (a > b) return 1;
+        else return 0;
     });
 
     // find the number 7 and replace it with a 2
@@ -74,7 +72,6 @@ void setup() {
     // => 1 -> 2 -> 3 -> 4 -> 6 -> //
 
     // perform a fast binary search (only works when the list is sorted!)
-    uint32_t start = millis();
     Serial.println("1 at index (bin-search): " + (String)list->binSearch(1));
     Serial.println("6 at index (bin-search): " + (String)list->binSearch(6));
     Serial.println("3 at index (bin-search): " + (String)list->binSearch(3));

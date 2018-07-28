@@ -1,9 +1,14 @@
-
 #ifndef SimpleList_h
 #define SimpleList_h
 
-#include <stddef.h>
-#include <functional>
+/*
+   ===========================================
+      Copyright (c) 2018 Stefan Kremser
+             github.com/spacehuhn
+   ===========================================
+ */
+
+#include <type_traits>
 
 template<typename T>
 class SimpleList {
@@ -48,10 +53,7 @@ class SimpleList {
                     this->next = next;
                 }
 
-                ~Node() {
-                    if ((data != NULL) && (std::is_pointer<T>::value)) delete data;
-                    if (next != NULL) delete next;
-                }
+                ~Node() {}
         };
 
         int (* compare)(T& a, T& b) = NULL;
