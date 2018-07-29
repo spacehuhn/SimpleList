@@ -9,6 +9,7 @@
  */
 
 #include <type_traits>
+#include <cstddef>
 
 template<typename T>
 class SimpleList {
@@ -262,7 +263,8 @@ void SimpleList<T>::removeLast() {
 template<typename T>
 bool SimpleList<T>::has(T obj) {
     if ((compare != NULL) && sorted) return binSearch(obj) >= 0;
-    else return search(obj) >= 0;
+
+    return search(obj) >= 0;
 }
 
 template<typename T>
