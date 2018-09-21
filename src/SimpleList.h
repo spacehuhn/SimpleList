@@ -16,6 +16,7 @@ template<typename T>
 class SimpleList {
     public:
         SimpleList();
+        SimpleList(int(*compare)(T & a, T & b));
         virtual ~SimpleList();
 
         virtual void setCompare(int (* compare)(T& a, T& b));
@@ -90,6 +91,11 @@ class SimpleList {
 
 template<typename T>
 SimpleList<T>::SimpleList() {}
+
+template<typename T>
+SimpleList<T>::SimpleList(int(*compare)(T & a, T & b)) {
+    setCompare(compare);
+}
 
 // Clear Nodes and free Memory
 template<typename T>
@@ -183,10 +189,12 @@ void SimpleList<T>::add(int index, T obj) {
 
 template<typename T>
 void SimpleList<T>::insert(T obj) {
-    if ((compare == NULL) || !sorted) {
+    if (!compare) {
         add(obj);
         return;
     }
+
+    if (!sorted) sort();
 
     // create new node
     Node* newNode = new Node(obj, NULL);
@@ -201,7 +209,7 @@ void SimpleList<T>::insert(T obj) {
             // add at end
             listEnd->next = newNode;
             listEnd       = newNode;
-        } else if (compare(obj, listBegin->data) <= 0) {
+        } else if (compare(obj, listBegin->data) < 0) {
             // add at start
             newNode->next = listBegin;
             listBegin     = newNode;
@@ -212,8 +220,8 @@ void SimpleList<T>::insert(T obj) {
             bool  found = false;
 
             // here a sequential search, because otherwise the previous node couldn't be accessed
-            while (h != NULL && !found) {
-                if (compare(h->data, obj) >= 0) {
+            while (h && !found) {
+                if (compare(obj, h->data) < 0) {
                     found = true;
                 } else {
                     p = h;
@@ -494,7 +502,7 @@ void SimpleList<T>::sort() {
         swap(indexH, indexMin);
     }
 
-    sorted = true;
+    this->sorted = true;
 }
 
 #endif // ifndef SimpleList_h
