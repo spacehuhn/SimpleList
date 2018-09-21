@@ -5,7 +5,7 @@
    ===========================================
  */
 
-#include "SimpleList.h"
+#include <SimpleList.h>
 
 SimpleList<int>* list;
 
@@ -26,6 +26,8 @@ void setup() {
     // create new list
     list = new SimpleList<int>();
 
+    Serial.println("Create list:");
+
     // add a bunch of numbers
     list->add(1);
     list->add(0);
@@ -38,18 +40,21 @@ void setup() {
     printList();
     // => 1 -> 0 -> 7 -> 1 -> 6 -> 16 -> //
 
-    // remove number 6 and 1
+    // remove first and last
+    Serial.println("Remove first and last:");
     list->remove(5); // remove node at index 5, alternative: removeNode(listSize-1);
     list->remove(0); // remove node at index 0
     printList();
     // => 0 -> 7 -> 1 -> 6 -> //
 
     // add number 4 at the end
+    Serial.println("Add number 4 at the end:");
     list->add(4);
     printList();
     // => 0 -> 7 -> 1 -> 6 -> 4 -> //
 
     // replace number 0 with 3
+    Serial.println("Replace number 0 with 3:");
     list->replace(0, 3);
     printList();
     // => 3 -> 7 -> 1 -> 6 -> 4 -> //
@@ -62,11 +67,13 @@ void setup() {
     });
 
     // find the number 7 and replace it with a 2
+    Serial.println("Replace number 7 with 2:");
     list->replace(list->search(7), 2);
     printList();
     // => 3 -> 2 -> 1 -> 6 -> 4 -> //
 
     // sort the list
+    Serial.println("Sort list:");
     list->sort();
     printList();
     // => 1 -> 2 -> 3 -> 4 -> 6 -> //
@@ -77,22 +84,27 @@ void setup() {
     Serial.println("3 at index (bin-search): " + (String)list->binSearch(3));
 
     // or do the slower sequential search (won't make a time difference in small lists like this)
+
     Serial.println("1 at index (seq-search): " + (String)list->search(1));
     Serial.println("6 at index (seq-search): " + (String)list->search(6));
     Serial.println("3 at index (seq-search): " + (String)list->search(3));
 
     // insert number 5 (which ist the list size) in the sorted list
     // note here that insert() will try to put the object in correct spot to keep the list sorted
+    Serial.println("Insert number 5:");
     list->insert(list->size());
     printList();
     // => 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> //
 
     // empty the list
+    Serial.println("Empty the list:");
     list->clear();
     // => Empty list :(
     printList();
 
-    // ad random numbers
+    // add random numbers
+    Serial.println("Add random numbers:");
+
     for (int i = 0; i < 10; i++) list->add(random(0, 9));
     printList();
 
@@ -109,6 +121,8 @@ void setup() {
     list->sort();
     Serial.println("List sorted: " + String(list->isSorted() ? "true" : "false"));
     printList();
+
+    Serial.println("Done");
 }
 
 void loop() {}
