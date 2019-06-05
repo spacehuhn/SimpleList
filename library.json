@@ -1,6 +1,6 @@
 {
     "name": "SimpleList",
-    " "keywords": "simple,list,linked,array,spacehuhn",
+    "keywords": "simple,list,linked,array,spacehuhn",
     "description": "A simple linked list made for Arduino projects",
     "repository":
     {
