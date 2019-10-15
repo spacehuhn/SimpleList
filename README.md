@@ -1,6 +1,6 @@
 # SimpleList
 
-**Use [std::list](https://de.cppreference.com/w/cpp/container/list) whenever possible, or at least [LinkedList](https://github.com/ivanseidel/LinkedList), as it's more tested and still maintained!!!***
+**Use [std::list](https://de.cppreference.com/w/cpp/container/list) whenever possible, or at least [LinkedList](https://github.com/ivanseidel/LinkedList), as it's more tested and still maintained!!!**
 
 Nothing big, just my own implementation of a linked list in c++ for all kind of Arduino projects.  
 This Arduino Library was inspired by the [LinkedList](https://github.com/ivanseidel/LinkedList)
